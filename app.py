@@ -44,6 +44,46 @@ st.markdown("""
     .badge-tidak-bahagia   { background:#fee2e2; color:#991b1b; padding:6px 16px; border-radius:20px; font-weight:700; font-size:15px; }
     h1 { color: #1a3c6e !important; }
     .stSelectbox label, .stSlider label { font-weight: 600; color: #333; }
+    /* Force text color putih untuk semua elemen */
+.metric-label { color: #ffffff !important; }
+.metric-sub   { color: #cccccc !important; }
+p, span, div, label { color: #ffffff !important; }
+
+/* Metric card dark mode */
+.metric-card {
+    background: #1e2a3a !important;
+    border-left: 5px solid #4268F6 !important;
+}
+.metric-value { color: #ffffff !important; }
+
+/* Tabel */
+.stDataFrame { color: #ffffff !important; }
+
+/* Warning & info box */
+.stWarning, .stInfo { color: #ffffff !important; }
+
+/* Selectbox & toggle label */
+.stSelectbox label, .stToggle label { color: #ffffff !important; }
+
+/* Caption */
+.stCaption { color: #aaaaaa !important; }
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #111827 !important;
+}
+section[data-testid="stSidebar"] * {
+    color: #ffffff !important;
+}
+
+/* Main background */
+.main { background-color: #0f172a !important; }
+
+/* Section header tetap oke */
+.section-header { color: #ffffff !important; }
+
+/* Footer */
+footer { color: #aaaaaa !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -114,7 +154,8 @@ with st.sidebar:
     negara    = st.selectbox("🌍 Pilih Negara", countries, index=countries.index("Indonesia"))
 
     years_available = sorted(df[df["Country name"] == negara]["year"].unique())
-    tahun = st.selectbox("📅 Pilih Tahun", years_available, index=len(years_available)-1)
+    tahun_options   = years_available + [2024, 2025, 2026]
+    tahun = st.selectbox("📅 Pilih Tahun", tahun_options, index=len(tahun_options)-1)
 
     st.markdown("---")
     st.markdown("### 🎛️ Atau Input Manual")
@@ -124,6 +165,8 @@ with st.sidebar:
 
     # Ambil data negara + tahun dari dataset
     row = df[(df["Country name"] == negara) & (df["year"] == tahun)]
+    if row.empty:
+        st.sidebar.warning("⚠️ Tahun ini tidak ada di dataset, aktifkan input manual untuk mengisi nilai fitur")
 
     input_values = {}
     feature_ranges = {
