@@ -12,24 +12,24 @@ st.set_page_config(
     layout="wide"
 )
 
-# ── Custom CSS ala dashboard pemerintah ──────────────────────
+# ── Custom CSS ───────────────────────────────────────────────
 st.markdown("""
 <style>
-    .main { background-color: #f0f2f6; }
     .block-container { padding: 2rem 3rem; }
     .metric-card {
-        background: white;
+        background: #1e2a3a;
         border-radius: 12px;
         padding: 20px 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        border-left: 5px solid #1a3c6e;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        border-left: 5px solid #4268F6;
+        margin-bottom: 8px;
     }
-    .metric-label { font-size: 13px; color: #666; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .metric-value { font-size: 32px; font-weight: 700; color: #1a3c6e; margin: 4px 0; }
-    .metric-sub   { font-size: 14px; color: #888; }
+    .metric-label { font-size: 13px; color: #aaaaaa !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-value { font-size: 32px; font-weight: 700; color: #ffffff !important; margin: 4px 0; }
+    .metric-sub   { font-size: 14px; color: #cccccc !important; }
     .section-header {
         background: linear-gradient(135deg, #1a3c6e, #2563a8);
-        color: white;
+        color: white !important;
         padding: 12px 20px;
         border-radius: 8px;
         font-size: 16px;
@@ -37,53 +37,13 @@ st.markdown("""
         margin: 20px 0 12px 0;
         letter-spacing: 0.3px;
     }
-    .badge-sangat-bahagia  { background:#d1fae5; color:#065f46; padding:6px 16px; border-radius:20px; font-weight:700; font-size:15px; }
-    .badge-bahagia         { background:#dbeafe; color:#1e40af; padding:6px 16px; border-radius:20px; font-weight:700; font-size:15px; }
-    .badge-cukup-bahagia   { background:#fef9c3; color:#854d0e; padding:6px 16px; border-radius:20px; font-weight:700; font-size:15px; }
-    .badge-kurang-bahagia  { background:#ffedd5; color:#9a3412; padding:6px 16px; border-radius:20px; font-weight:700; font-size:15px; }
-    .badge-tidak-bahagia   { background:#fee2e2; color:#991b1b; padding:6px 16px; border-radius:20px; font-weight:700; font-size:15px; }
-    h1 { color: #1a3c6e !important; }
-    .stSelectbox label, .stSlider label { font-weight: 600; color: #333; }
-    /* Force text color putih untuk semua elemen */
-.metric-label { color: #ffffff !important; }
-.metric-sub   { color: #cccccc !important; }
-p, span, div, label { color: #ffffff !important; }
-
-/* Metric card dark mode */
-.metric-card {
-    background: #1e2a3a !important;
-    border-left: 5px solid #4268F6 !important;
-}
-.metric-value { color: #ffffff !important; }
-
-/* Tabel */
-.stDataFrame { color: #ffffff !important; }
-
-/* Warning & info box */
-.stWarning, .stInfo { color: #ffffff !important; }
-
-/* Selectbox & toggle label */
-.stSelectbox label, .stToggle label { color: #ffffff !important; }
-
-/* Caption */
-.stCaption { color: #aaaaaa !important; }
-
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background-color: #111827 !important;
-}
-section[data-testid="stSidebar"] * {
-    color: #ffffff !important;
-}
-
-/* Main background */
-.main { background-color: #0f172a !important; }
-
-/* Section header tetap oke */
-.section-header { color: #ffffff !important; }
-
-/* Footer */
-footer { color: #aaaaaa !important; }
+    h1, h2, h3, h4, h5 { color: #ffffff !important; }
+    p, span, label { color: #ffffff !important; }
+    .main { background-color: #0f172a !important; }
+    section[data-testid="stSidebar"] { background-color: #111827 !important; }
+    section[data-testid="stSidebar"] * { color: #ffffff !important; }
+    .stCaption { color: #aaaaaa !important; }
+    footer { color: #aaaaaa !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -107,7 +67,6 @@ def load_data():
         "Generosity", "Perceptions of corruption",
         "Positive affect", "Negative affect",
     ]
-
     df = df.dropna(subset=[TARGET]).copy()
     for col in FEATURES:
         df[col] = df.groupby("Country name")[col].transform(lambda x: x.fillna(x.mean()))
@@ -117,36 +76,41 @@ def load_data():
 
 xgb, FEATURES_SELECTED = load_model()
 df = load_data()
-
 TARGET = "Life Ladder"
 
 # ── Helper ───────────────────────────────────────────────────
 def interpret_happiness(score):
-    if score >= 7.0:   return "😄 Sangat Bahagia",  "sangat-bahagia"
-    elif score >= 6.0: return "🙂 Bahagia",          "bahagia"
-    elif score >= 5.0: return "😐 Cukup Bahagia",    "cukup-bahagia"
-    elif score >= 4.0: return "😔 Kurang Bahagia",   "kurang-bahagia"
-    else:              return "😢 Tidak Bahagia",     "tidak-bahagia"
+    if score >= 7.0:   return "😄 Sangat Bahagia"
+    elif score >= 6.0: return "🙂 Bahagia"
+    elif score >= 5.0: return "😐 Cukup Bahagia"
+    elif score >= 4.0: return "😔 Kurang Bahagia"
+    else:              return "😢 Tidak Bahagia"
 
 feature_labels = {
-    "Log GDP per capita":               "Log GDP per Capita",
-    "Social support":                   "Social Support",
-    "Perceptions of corruption":        "Perceptions of Corruption",
-    "Positive affect":                  "Positive Affect",
-    "Negative affect":                  "Negative Affect",
-    "affect_balance":                   "Affect Balance",
+    "Log GDP per capita":        "Log GDP per Capita",
+    "Social support":            "Social Support",
+    "Perceptions of corruption": "Perceptions of Corruption",
+    "Positive affect":           "Positive Affect",
+    "Negative affect":           "Negative Affect",
+    "affect_balance":            "Affect Balance",
+}
+
+feature_ranges = {
+    "Log GDP per capita":        (5.5,  12.0, 0.01),
+    "Social support":            (0.0,  1.0,  0.01),
+    "Perceptions of corruption": (0.0,  1.0,  0.01),
+    "Positive affect":           (0.0,  1.0,  0.01),
+    "Negative affect":           (0.0,  1.0,  0.01),
+    "affect_balance":            (-1.0, 1.0,  0.01),
 }
 
 # ── Header ───────────────────────────────────────────────────
-col_logo, col_title = st.columns([1, 11])
-with col_title:
-    st.markdown("# 🌏 Dashboard Prediksi Tingkat Kebahagiaan Negara")
-    st.markdown("**World Happiness Report — Life Ladder Prediction System** | Powered by XGBoost")
+st.markdown("# 🌏 Dashboard Prediksi Tingkat Kebahagiaan Negara")
+st.markdown("**World Happiness Report — Life Ladder Prediction System** | Powered by XGBoost")
 st.divider()
 
 # ── Sidebar ──────────────────────────────────────────────────
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/320px-Flag_of_Indonesia.svg.png", width=80)
     st.markdown("### ⚙️ Parameter Input")
     st.markdown("---")
 
@@ -155,29 +119,20 @@ with st.sidebar:
 
     years_available = sorted(df[df["Country name"] == negara]["year"].unique())
     tahun_options   = years_available + [2024, 2025, 2026]
-    tahun = st.selectbox("📅 Pilih Tahun", tahun_options, index=len(tahun_options)-1)
+    tahun           = st.selectbox("📅 Pilih Tahun", tahun_options, index=len(tahun_options)-1)
+
+    row = df[(df["Country name"] == negara) & (df["year"] == tahun)]
 
     st.markdown("---")
-    st.markdown("### 🎛️ Atau Input Manual")
-    st.caption("Geser slider untuk override nilai dari dataset")
+    st.markdown("### 🎛️ Input Manual")
+    st.caption("Aktifkan untuk override nilai fitur dari dataset")
 
-    use_manual = st.toggle("Aktifkan Input Manual", value=False)
+    use_manual = st.toggle("Aktifkan Input Manual", value=row.empty)
 
-    # Ambil data negara + tahun dari dataset
-    row = df[(df["Country name"] == negara) & (df["year"] == tahun)]
     if row.empty:
-        st.sidebar.warning("⚠️ Tahun ini tidak ada di dataset, aktifkan input manual untuk mengisi nilai fitur")
+        st.warning("⚠️ Tahun ini tidak ada di dataset. Isi nilai fitur secara manual.")
 
     input_values = {}
-    feature_ranges = {
-        "Log GDP per capita":        (5.5,  12.0, 0.01),
-        "Social support":            (0.0,  1.0,  0.01),
-        "Perceptions of corruption": (0.0,  1.0,  0.01),
-        "Positive affect":           (0.0,  1.0,  0.01),
-        "Negative affect":           (0.0,  1.0,  0.01),
-        "affect_balance":            (-1.0, 1.0,  0.01),
-    }
-
     for feat in FEATURES_SELECTED:
         label        = feature_labels.get(feat, feat)
         mn, mx, step = feature_ranges.get(feat, (0.0, 1.0, 0.01))
@@ -190,12 +145,11 @@ with st.sidebar:
 
     predict_btn = st.button("🔮 Prediksi Sekarang", type="primary", use_container_width=True)
 
-# ── Main content ─────────────────────────────────────────────
+# ── Section 1: Info negara (hanya kalau ada di dataset) ──────
 if not row.empty:
     actual_score = float(row[TARGET].values[0])
-    label_actual, badge_actual = interpret_happiness(actual_score)
+    label_actual = interpret_happiness(actual_score)
 
-    # ── Section 1: Info negara ───────────────────────────────
     st.markdown(f'<div class="section-header">📌 Informasi Negara — {negara} ({int(tahun)})</div>', unsafe_allow_html=True)
 
     c1, c2, c3, c4 = st.columns(4)
@@ -229,15 +183,19 @@ if not row.empty:
             <div class="metric-value" style="font-size:20px">{label_actual}</div>
             <div class="metric-sub">Berdasarkan skor aktual</div>
         </div>""", unsafe_allow_html=True)
+else:
+    st.info(f"ℹ️ Tahun **{int(tahun)}** tidak ada di dataset — prediksi berdasarkan input manual")
 
-    # ── Section 2: Hasil prediksi (kalau tombol ditekan) ────
-    if predict_btn:
-        X_input  = np.array([[input_values[f] for f in FEATURES_SELECTED]])
-        pred     = xgb.predict(X_input)[0]
-        label_pred, badge_pred = interpret_happiness(pred)
-        selisih  = pred - actual_score
+# ── Section 2: Hasil prediksi ────────────────────────────────
+if predict_btn:
+    if row.empty and not use_manual:
+        st.warning("⚠️ Aktifkan **Input Manual** di sidebar untuk mengisi nilai fitur!")
+    else:
+        X_input    = np.array([[input_values[f] for f in FEATURES_SELECTED]])
+        pred       = xgb.predict(X_input)[0]
+        label_pred = interpret_happiness(pred)
 
-        st.markdown(f'<div class="section-header">🔮 Hasil Prediksi XGBoost</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="section-header">🔮 Hasil Prediksi XGBoost — {negara} ({int(tahun)})</div>', unsafe_allow_html=True)
 
         p1, p2, p3 = st.columns(3)
         with p1:
@@ -248,13 +206,21 @@ if not row.empty:
                 <div class="metric-sub">Hasil model XGBoost</div>
             </div>""", unsafe_allow_html=True)
         with p2:
-            arrow = "▲" if selisih >= 0 else "▼"
-            warna = "#065f46" if selisih >= 0 else "#991b1b"
+            if not row.empty:
+                selisih = pred - float(row[TARGET].values[0])
+                arrow   = "▲" if selisih >= 0 else "▼"
+                warna   = "#4ade80" if selisih >= 0 else "#f87171"
+                sub     = "Prediksi vs nilai aktual"
+                val_str = f"{arrow} {abs(selisih):.4f}"
+            else:
+                warna   = "#888888"
+                sub     = "Tidak ada data aktual"
+                val_str = "—"
             st.markdown(f"""
             <div class="metric-card">
                 <div class="metric-label">Selisih vs Aktual</div>
-                <div class="metric-value" style="color:{warna}">{arrow} {abs(selisih):.4f}</div>
-                <div class="metric-sub">Prediksi vs nilai aktual</div>
+                <div class="metric-value" style="color:{warna}">{val_str}</div>
+                <div class="metric-sub">{sub}</div>
             </div>""", unsafe_allow_html=True)
         with p3:
             st.markdown(f"""
@@ -264,72 +230,82 @@ if not row.empty:
                 <div class="metric-sub">Kategori kebahagiaan</div>
             </div>""", unsafe_allow_html=True)
 
-        # Tabel input yang dipakai
         st.markdown("##### 📋 Nilai Fitur yang Digunakan")
         df_input = pd.DataFrame({
-            "Fitur":  [feature_labels.get(f, f) for f in FEATURES_SELECTED],
-            "Nilai":  [f"{input_values[f]:.4f}" for f in FEATURES_SELECTED],
+            "Fitur": [feature_labels.get(f, f) for f in FEATURES_SELECTED],
+            "Nilai": [f"{input_values[f]:.4f}" for f in FEATURES_SELECTED],
         })
         st.dataframe(df_input, use_container_width=True, hide_index=True)
 
-    # ── Section 3: Grafik tren ───────────────────────────────
-    st.markdown(f'<div class="section-header">📈 Tren Life Ladder — {negara}</div>', unsafe_allow_html=True)
-
+# ── Section 3: Grafik tren (hanya kalau ada di dataset) ──────
+if not row.empty or tahun in df[df["Country name"] == negara]["year"].values:
     tren = df[df["Country name"] == negara].sort_values("year")
 
-    fig, ax = plt.subplots(figsize=(13, 4.5))
-    fig.patch.set_facecolor("white")
-    ax.set_facecolor("#f8fafc")
+    if len(tren) > 0:
+        st.markdown(f'<div class="section-header">📈 Tren Life Ladder — {negara}</div>', unsafe_allow_html=True)
 
-    ax.plot(tren["year"], tren[TARGET], color="#1a3c6e", linewidth=2.5,
-            marker="o", markersize=6, label="Life Ladder Aktual", zorder=3)
-    ax.fill_between(tren["year"], tren[TARGET], alpha=0.08, color="#1a3c6e")
+        fig, ax = plt.subplots(figsize=(13, 4.5))
+        fig.patch.set_facecolor("#0f172a")
+        ax.set_facecolor("#1e2a3a")
 
-    # Highlight tahun yang dipilih
-    if tahun in tren["year"].values:
-        hl_val = tren[tren["year"] == tahun][TARGET].values[0]
-        ax.scatter([tahun], [hl_val], color="#e63946", s=120, zorder=5, label=f"Tahun dipilih ({int(tahun)})")
-        ax.annotate(f"{hl_val:.2f}", (tahun, hl_val),
-                    textcoords="offset points", xytext=(0, 12),
-                    ha="center", fontsize=10, color="#e63946", fontweight="bold")
+        ax.plot(tren["year"], tren[TARGET], color="#4268F6", linewidth=2.5,
+                marker="o", markersize=6, label="Life Ladder Aktual", zorder=3)
+        ax.fill_between(tren["year"], tren[TARGET], alpha=0.1, color="#4268F6")
 
-    # Garis referensi kategori
-    refs = [(7.0, "#065f46", "Sangat Bahagia"), (6.0, "#1e40af", "Bahagia"),
-            (5.0, "#854d0e", "Cukup Bahagia"),  (4.0, "#9a3412", "Kurang Bahagia")]
-    for val, color, lbl in refs:
-        ax.axhline(val, color=color, linewidth=0.8, linestyle="--", alpha=0.4)
-        ax.text(tren["year"].min() - 0.3, val + 0.05, lbl,
-                fontsize=7.5, color=color, alpha=0.7, va="bottom")
+        if tahun in tren["year"].values:
+            hl_val = tren[tren["year"] == tahun][TARGET].values[0]
+            ax.scatter([tahun], [hl_val], color="#f76a8c", s=120, zorder=5, label=f"Tahun dipilih ({int(tahun)})")
+            ax.annotate(f"{hl_val:.2f}", (tahun, hl_val),
+                        textcoords="offset points", xytext=(0, 12),
+                        ha="center", fontsize=10, color="#f76a8c", fontweight="bold")
 
-    ax.set_xlabel("Tahun", fontsize=11)
-    ax.set_ylabel("Life Ladder Score", fontsize=11)
-    ax.set_title(f"Tren Life Ladder — {negara} ({int(tren['year'].min())}–{int(tren['year'].max())})",
-                 fontsize=13, fontweight="bold", color="#1a3c6e")
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(2))
-    ax.legend(fontsize=10)
-    ax.grid(True, alpha=0.3)
-    plt.tight_layout()
-    st.pyplot(fig)
+        refs = [(7.0, "#4ade80", "Sangat Bahagia"), (6.0, "#60a5fa", "Bahagia"),
+                (5.0, "#fbbf24", "Cukup Bahagia"),  (4.0, "#f87171", "Kurang Bahagia")]
+        for val, color, lbl in refs:
+            ax.axhline(val, color=color, linewidth=0.8, linestyle="--", alpha=0.5)
+            ax.text(tren["year"].min() - 0.3, val + 0.05, lbl,
+                    fontsize=7.5, color=color, alpha=0.8, va="bottom")
 
-    # ── Section 4: Perbandingan global ──────────────────────
+        ax.set_xlabel("Tahun", fontsize=11, color="#cccccc")
+        ax.set_ylabel("Life Ladder Score", fontsize=11, color="#cccccc")
+        ax.set_title(f"Tren Life Ladder — {negara} ({int(tren['year'].min())}–{int(tren['year'].max())})",
+                     fontsize=13, fontweight="bold", color="#ffffff")
+        ax.tick_params(colors="#aaaaaa")
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(2))
+        ax.spines[:].set_color("#2e3a4e")
+        ax.legend(fontsize=10, labelcolor="white", facecolor="#1e2a3a", edgecolor="#2e3a4e")
+        ax.grid(True, alpha=0.2, color="#ffffff")
+        plt.tight_layout()
+        st.pyplot(fig)
+
+# ── Section 4: Perbandingan global (hanya kalau tahun ada) ───
+global_year_df = df[df["year"] == tahun]
+if not global_year_df.empty:
     st.markdown(f'<div class="section-header">🏆 Perbandingan Global — Tahun {int(tahun)}</div>', unsafe_allow_html=True)
 
-    global_year  = df[df["year"] == tahun].copy()
-    global_rank  = global_year.sort_values(TARGET, ascending=False).reset_index(drop=True)
+    global_rank  = global_year_df.sort_values(TARGET, ascending=False).reset_index(drop=True)
     global_rank.index += 1
-    rank_negara  = global_rank[global_rank["Country name"] == negara].index[0]
     total_negara = len(global_rank)
+    global_mean  = global_year_df[TARGET].mean()
+
+    negara_in_rank = global_rank[global_rank["Country name"] == negara]
 
     r1, r2, r3 = st.columns(3)
     with r1:
+        if not negara_in_rank.empty:
+            rank_negara = negara_in_rank.index[0]
+            rank_str    = f"#{rank_negara}"
+            rank_sub    = f"dari {total_negara} negara ({int(tahun)})"
+        else:
+            rank_str = "—"
+            rank_sub = "Tidak ada di dataset tahun ini"
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-label">Peringkat Global</div>
-            <div class="metric-value">#{rank_negara}</div>
-            <div class="metric-sub">dari {total_negara} negara ({int(tahun)})</div>
+            <div class="metric-value">{rank_str}</div>
+            <div class="metric-sub">{rank_sub}</div>
         </div>""", unsafe_allow_html=True)
     with r2:
-        global_mean = global_year[TARGET].mean()
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-label">Rata-rata Global</div>
@@ -337,17 +313,23 @@ if not row.empty:
             <div class="metric-sub">Rata-rata semua negara</div>
         </div>""", unsafe_allow_html=True)
     with r3:
-        vs_global = actual_score - global_mean
-        arrow = "▲" if vs_global >= 0 else "▼"
-        warna = "#065f46" if vs_global >= 0 else "#991b1b"
+        if not row.empty:
+            vs_global = float(row[TARGET].values[0]) - global_mean
+            arrow     = "▲" if vs_global >= 0 else "▼"
+            warna     = "#4ade80" if vs_global >= 0 else "#f87171"
+            val_str   = f"{arrow} {abs(vs_global):.3f}"
+            sub       = "Selisih dari rata-rata dunia"
+        else:
+            warna   = "#888888"
+            val_str = "—"
+            sub     = "Tidak ada data aktual"
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-label">vs Rata-rata Global</div>
-            <div class="metric-value" style="color:{warna}">{arrow} {abs(vs_global):.3f}</div>
-            <div class="metric-sub">Selisih dari rata-rata dunia</div>
+            <div class="metric-value" style="color:{warna}">{val_str}</div>
+            <div class="metric-sub">{sub}</div>
         </div>""", unsafe_allow_html=True)
 
-    # Top 10 & Bottom 10
     t1, t2 = st.columns(2)
     with t1:
         st.markdown("**🌟 Top 10 Negara Paling Bahagia**")
@@ -363,9 +345,8 @@ if not row.empty:
         bot10["Life Ladder"] = bot10["Life Ladder"].round(3)
         bot10.index = range(total_negara - 9, total_negara + 1)
         st.dataframe(bot10, use_container_width=True)
-
 else:
-    st.warning(f"⚠️ Data untuk **{negara}** tahun **{int(tahun)}** tidak ditemukan di dataset.")
+    st.info(f"ℹ️ Data perbandingan global untuk tahun {int(tahun)} tidak tersedia di dataset")
 
 # ── Footer ───────────────────────────────────────────────────
 st.divider()
