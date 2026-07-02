@@ -13,34 +13,40 @@ st.set_page_config(
 )
 
 # ── Custom CSS ───────────────────────────────────────────────
+
 st.markdown("""
 <style>
     .block-container { padding: 2rem 3rem; }
     .metric-card {
-        background: var(--background-color, #1e2a3a);
         border-radius: 12px;
         padding: 20px 24px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         border-left: 5px solid #4268F6;
-        margin-bottom: 8px;
         border: 1px solid rgba(128,128,128,0.2);
+        margin-bottom: 8px;
     }
-    .metric-label {
-        font-size: 13px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        opacity: 0.7;
+
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+        .metric-card { background: #f8fafc; }
+        .metric-label { color: #555555 !important; }
+        .metric-value { color: #1a3c6e !important; }
+        .metric-sub   { color: #777777 !important; }
     }
-    .metric-value {
-        font-size: 32px;
-        font-weight: 700;
-        margin: 4px 0;
+
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+        .metric-card { background: #1e2a3a; }
+        .metric-label { color: #aaaaaa !important; }
+        .metric-value { color: #ffffff !important; }
+        .metric-sub   { color: #cccccc !important; }
     }
-    .metric-sub {
-        font-size: 14px;
-        opacity: 0.6;
-    }
+
+    /* Fallback kalau media query tidak terbaca */
+    .metric-label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-value { font-size: 32px; font-weight: 700; margin: 4px 0; }
+    .metric-sub   { font-size: 14px; }
+
     .section-header {
         background: linear-gradient(135deg, #1a3c6e, #2563a8);
         color: white !important;
