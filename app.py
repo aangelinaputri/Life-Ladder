@@ -87,21 +87,21 @@ def interpret_happiness(score):
     else:              return "😢 Tidak Bahagia"
 
 feature_labels = {
-    "Log GDP per capita":        "Log GDP per Capita",
-    "Social support":            "Social Support",
-    "Perceptions of corruption": "Perceptions of Corruption",
-    "Positive affect":           "Positive Affect",
-    "Negative affect":           "Negative Affect",
-    "affect_balance":            "Affect Balance",
+    "Log GDP per capita":               "Log GDP per Capita",
+    "Social support":                   "Social Support",
+    "Healthy life expectancy at birth": "Healthy Life Expectancy",
+    "Perceptions of corruption":        "Perceptions of Corruption",
+    "Positive affect":                  "Positive Affect",
+    "affect_balance":                   "Affect Balance",
 }
 
 feature_ranges = {
-    "Log GDP per capita":        (5.5,  12.0, 0.01),
-    "Social support":            (0.0,  1.0,  0.01),
-    "Perceptions of corruption": (0.0,  1.0,  0.01),
-    "Positive affect":           (0.0,  1.0,  0.01),
-    "Negative affect":           (0.0,  1.0,  0.01),
-    "affect_balance":            (-1.0, 1.0,  0.01),
+    "Log GDP per capita":               (5.5,  12.0, 0.01),
+    "Social support":                   (0.0,  1.0,  0.01),
+    "Healthy life expectancy at birth": (30.0, 80.0, 0.1),
+    "Perceptions of corruption":        (0.0,  1.0,  0.01),
+    "Positive affect":                  (0.0,  1.0,  0.01),
+    "affect_balance":                   (-1.0, 1.0,  0.01),
 }
 
 # ── Header ───────────────────────────────────────────────────
