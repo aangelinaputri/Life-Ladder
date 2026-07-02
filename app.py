@@ -17,16 +17,30 @@ st.markdown("""
 <style>
     .block-container { padding: 2rem 3rem; }
     .metric-card {
-        background: #1e2a3a;
+        background: var(--background-color, #1e2a3a);
         border-radius: 12px;
         padding: 20px 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         border-left: 5px solid #4268F6;
         margin-bottom: 8px;
+        border: 1px solid rgba(128,128,128,0.2);
     }
-    .metric-label { font-size: 13px; color: #aaaaaa !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .metric-value { font-size: 32px; font-weight: 700; color: #ffffff !important; margin: 4px 0; }
-    .metric-sub   { font-size: 14px; color: #cccccc !important; }
+    .metric-label {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.7;
+    }
+    .metric-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 4px 0;
+    }
+    .metric-sub {
+        font-size: 14px;
+        opacity: 0.6;
+    }
     .section-header {
         background: linear-gradient(135deg, #1a3c6e, #2563a8);
         color: white !important;
@@ -37,16 +51,8 @@ st.markdown("""
         margin: 20px 0 12px 0;
         letter-spacing: 0.3px;
     }
-    h1, h2, h3, h4, h5 { color: #ffffff !important; }
-    p, span, label { color: #ffffff !important; }
-    .main { background-color: #0f172a !important; }
-    section[data-testid="stSidebar"] { background-color: #111827 !important; }
-    section[data-testid="stSidebar"] * { color: #ffffff !important; }
-    .stCaption { color: #aaaaaa !important; }
-    footer { color: #aaaaaa !important; }
 </style>
 """, unsafe_allow_html=True)
-
 # ── Load model & data ────────────────────────────────────────
 @st.cache_resource
 def load_model():
